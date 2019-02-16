@@ -5,6 +5,7 @@ namespace PierceTech\OAuth2\Client\Provider;
 use \League\OAuth2\Client\Provider\AbstractProvider;
 use \League\OAuth2\Client\Entity\User;
 use \League\OAuth2\Client\Token\AccessToken;
+use Psr\Http\Message\ResponseInterface;
 
 class Coinbase extends AbstractProvider {
 
@@ -31,6 +32,8 @@ class Coinbase extends AbstractProvider {
       return "https://www.coinbase.com/oauth/token";
     }
 
+
+
     /**
      * Checks a provider response for errors.
      *
@@ -40,7 +43,11 @@ class Coinbase extends AbstractProvider {
      * @return void
      */
     protected function checkResponse(ResponseInterface $response, $data) {
-      dd([$response, $data]);
+      if($response->getStatusCode() == 200) {
+        return;
+      }
+
+      throw new \Exception(sprintf('Coinbase returned a status of %s during the handshake', $response->getStatusCode()));
     }
 
     /**
@@ -65,16 +72,16 @@ class Coinbase extends AbstractProvider {
       return "https://api.coinbase.com/v2/user";
     }
 
-
     /**
-     * Checks a provider response for errors.
+     * Returns the default scopes used by this provider.
      *
-     * @throws IdentityProviderException
-     * @param  ResponseInterface $response
-     * @param  array|string $data Parsed response data
-     * @return void
+     * This should only be the scopes that are required to request the details
+     * of the resource owner, rather than all the available scopes.
+     *
+     * @return array
      */
-    protected function checkResponse(ResponseInterface $response, $data) {
-
+    protected function getDefaultScopes() {
+      return ['wallet:accounts:read'];
     }
+
 }
