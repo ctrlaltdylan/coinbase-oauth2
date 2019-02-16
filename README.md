@@ -71,7 +71,7 @@ if (!isset($_GET['code'])) {
 ### Refreshing a Token
 
 ```php
-$provider = new Openclerk\OAuth2\Client\Provider\Coinbase([
+$provider = new PierceTech\OAuth2\Client\Provider\Coinbase([
   'clientId'      => 'XXXXXXXX',
   'clientSecret'  => 'XXXXXXXX',
   'redirectUri'   => 'https://your-registered-redirect-uri/',
