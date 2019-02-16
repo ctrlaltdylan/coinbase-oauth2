@@ -1,5 +1,5 @@
 {
-  "name": "openclerk/coinbase-oauth2",
+  "name": "piercetech/coinbase-oauth2",
   "description": "Coinbase Provider for the OAuth 2.0 Client",
   "autoload": {
     "psr-4": {
