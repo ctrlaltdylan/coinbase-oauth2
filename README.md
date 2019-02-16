@@ -1,7 +1,7 @@
 openclerk/coinbase-oauth2
 =========================
 
-Implementation of a Coinbase OAuth 2.0 provider
+Implementation of a Coinbase API v2 OAuth 2.0 provider
 for the [league/oauth2-client](https://github.com/thephpleague/oauth2-client) client.
 
 ## Installing
@@ -9,12 +9,12 @@ for the [league/oauth2-client](https://github.com/thephpleague/oauth2-client) cl
 To install, use composer:
 
 ```
-composer require openclerk/coinbase-oauth2
+composer require piercetech/coinbase-oauth2
 ```
 
 ## Usage
 
-Usage is the same as the normal client, using `Openclerk\OAuth2\Client\Provider\Coinbase` as the provider:
+Usage is the same as the normal client, using `PierceTech\OAuth2\Client\Provider\Coinbase` as the provider:
 
 
 ### Authorization Code Flow
@@ -24,7 +24,7 @@ $provider = new Openclerk\OAuth2\Client\Provider\Coinbase([
   'clientId'      => 'XXXXXXXX',
   'clientSecret'  => 'XXXXXXXX',
   'redirectUri'   => 'https://your-registered-redirect-uri/',
-  'scopes'        => ['user', 'balance', '...'],
+  'scopes'        => ['wallet:accounts:read', 'wallet:transactions:read', '...'],
 ]);
 
 if (!isset($_GET['code'])) {
@@ -34,12 +34,6 @@ if (!isset($_GET['code'])) {
   $_SESSION['oauth2state'] = $provider->state;
   header('Location: '.$authUrl);
   exit;
-
-// Check given state against previously stored one to mitigate CSRF attack
-} elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
-
-  unset($_SESSION['oauth2state']);
-  exit('Invalid state');
 
 } else {
 
@@ -55,12 +49,7 @@ if (!isset($_GET['code'])) {
     $userDetails = $provider->getUserDetails($token);
 
     // Use these details to create a new profile
-    printf('Hello %s!', $userDetails->firstName);
-
-    // You can also get Coinbase balances
-    $balanceDetails = $provider->getBalanceDetails($token);
-
-    printf('You have %f %s', $balanceDetails['amount'], $balanceDetails['currency']);
+    printf('Hello %s!', $userDetails->data->firstName);
 
   } catch (Exception $e) {
 
@@ -71,10 +60,10 @@ if (!isset($_GET['code'])) {
   // Use this to interact with an API on the users behalf
   echo $token->accessToken;
 
-  // Use this to get a new access token if the old one expires
+  // Use this to get a new access token when the old one expires (2 hours from initial handshake)
   echo $token->refreshToken;
 
-  // Number of seconds until the access token will expire, and need refreshing
+  // The Unix Epoch Timestamp when the Coinbase Token will expire
   echo $token->expires;
 }
 ```
