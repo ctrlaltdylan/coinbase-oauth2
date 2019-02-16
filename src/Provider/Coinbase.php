@@ -64,4 +64,17 @@ class Coinbase extends AbstractProvider {
     public function getResourceOwnerDetailsUrl(AccessToken $token) {
       return "https://api.coinbase.com/v2/user";
     }
+
+
+    /**
+     * Checks a provider response for errors.
+     *
+     * @throws IdentityProviderException
+     * @param  ResponseInterface $response
+     * @param  array|string $data Parsed response data
+     * @return void
+     */
+    protected function checkResponse(ResponseInterface $response, $data) {
+
+    }
 }
